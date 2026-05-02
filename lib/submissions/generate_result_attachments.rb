@@ -89,7 +89,7 @@ module Submissions
       account = submitter.account
       submission = submitter.submission
 
-      pkcs = Accounts.load_signing_pkcs(account)
+      pkcs = Docuseal.external_signer? ? nil : Accounts.load_signing_pkcs(account)
       tsa_url = Accounts.load_timeserver_url(account)
 
       image_pdfs = []
@@ -790,11 +790,20 @@ module Submissions
     end
 
     def build_signing_params(_submitter, pkcs, tsa_url)
-      params = {
-        certificate: pkcs.certificate,
-        key: pkcs.key,
-        certificate_chain: pkcs.ca_certs || []
-      }
+      params =
+        if Docuseal.external_signer?
+          {
+            certificate: ExternalSigner.load_certificate,
+            external_signing: ->(digest_algorithm, hash) { ExternalSigner.sign_hash(digest_algorithm, hash) },
+            signature_size: 32_768
+          }
+        else
+          {
+            certificate: pkcs.certificate,
+            key: pkcs.key,
+            certificate_chain: pkcs.ca_certs || []
+          }
+        end
 
       if tsa_url
         params[:timestamp_handler] = Submissions::TimestampHandler.new(tsa_url:)

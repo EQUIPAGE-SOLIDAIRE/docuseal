@@ -37,6 +37,10 @@ module Docuseal
 
   CERTS = JSON.parse(ENV.fetch('CERTS', '{}'))
   TIMESERVER_URL = ENV.fetch('TIMESERVER_URL', nil)
+
+  EXTERNAL_SIGNER_URL = ENV.fetch('EXTERNAL_SIGNER_URL', nil).freeze
+  EXTERNAL_SIGNER_SECRET = ENV.fetch('EXTERNAL_SIGNER_SECRET', nil).freeze
+  EXTERNAL_SIGNER_TIMEOUT = ENV.fetch('EXTERNAL_SIGNER_TIMEOUT', '15').to_i.freeze
   VERSION_FILE_PATH = Rails.root.join('.version')
   VERSION_FILE2_PATH = Rails.public_path.join('version')
 
@@ -70,6 +74,10 @@ module Docuseal
 
   def active_storage_public?
     ENV['ACTIVE_STORAGE_PUBLIC'] == 'true'
+  end
+
+  def external_signer?
+    EXTERNAL_SIGNER_URL.present?
   end
 
   def default_pkcs
