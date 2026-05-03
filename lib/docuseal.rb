@@ -38,8 +38,8 @@ module Docuseal
   CERTS = JSON.parse(ENV.fetch('CERTS', '{}'))
   TIMESERVER_URL = ENV.fetch('TIMESERVER_URL', nil)
 
-  EXTERNAL_SIGNER_URL = ENV.fetch('EXTERNAL_SIGNER_URL', nil).freeze
-  EXTERNAL_SIGNER_SECRET = ENV.fetch('EXTERNAL_SIGNER_SECRET', nil).freeze
+  EXTERNAL_SIGNER_URL_ENV = ENV.fetch('EXTERNAL_SIGNER_URL', nil).freeze
+  EXTERNAL_SIGNER_SECRET_ENV = ENV.fetch('EXTERNAL_SIGNER_SECRET', nil).freeze
   EXTERNAL_SIGNER_TIMEOUT = ENV.fetch('EXTERNAL_SIGNER_TIMEOUT', '15').to_i.freeze
   VERSION_FILE_PATH = Rails.root.join('.version')
   VERSION_FILE2_PATH = Rails.public_path.join('version')
@@ -76,8 +76,26 @@ module Docuseal
     ENV['ACTIVE_STORAGE_PUBLIC'] == 'true'
   end
 
-  def external_signer?
-    EXTERNAL_SIGNER_URL.present?
+  def external_signer_config(account = nil)
+    db = EncryptedConfig.find_by(account:, key: EncryptedConfig::EXTERNAL_SIGNER_KEY)&.value || {}
+    {
+      'url' => db['url'].presence || EXTERNAL_SIGNER_URL_ENV,
+      'secret' => db['secret'].presence || EXTERNAL_SIGNER_SECRET_ENV,
+      'enabled' => db.key?('enabled') ? db['enabled'] : EXTERNAL_SIGNER_URL_ENV.present?
+    }
+  end
+
+  def external_signer?(account = nil)
+    config = external_signer_config(account)
+    config['enabled'] && config['url'].present?
+  end
+
+  def external_signer_url(account = nil)
+    external_signer_config(account)['url']
+  end
+
+  def external_signer_secret(account = nil)
+    external_signer_config(account)['secret']
   end
 
   def default_pkcs

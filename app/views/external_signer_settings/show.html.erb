@@ -1,0 +1,67 @@
+<div class="flex-wrap space-y-4 md:flex md:flex-nowrap md:space-y-0 md:space-x-10">
+  <%= render 'shared/settings_nav' %>
+  <div class="md:flex-grow max-w-xl">
+    <h1 class="text-4xl font-bold mb-2">
+      External Signer
+    </h1>
+    <p class="text-base-content/70 mb-8">
+      Delegate PDF signing to an external HTTP API (e.g. a hardware USB token).
+    </p>
+
+    <%= form_with url: settings_external_signer_path, method: :post, html: { autocomplete: 'off', class: 'space-y-6' } do |f| %>
+      <div class="flex items-center justify-between py-2.5 border-b border-base-200">
+        <div>
+          <span class="font-medium">Enable external signer</span>
+          <p class="text-sm text-base-content/60 mt-0.5">When enabled, DocuSeal delegates signing to the API below instead of using an internal certificate.</p>
+        </div>
+        <label class="flex items-center cursor-pointer ml-4">
+          <input type="hidden" name="external_signer[enabled]" value="0">
+          <input type="checkbox" name="external_signer[enabled]" value="1" class="toggle toggle-primary"
+                 <%= 'checked' if @config['enabled'] %>>
+        </label>
+      </div>
+
+      <div class="form-control">
+        <label class="label" for="external_signer_url">
+          <span class="label-text font-medium">API URL</span>
+        </label>
+        <input type="url" id="external_signer_url" name="external_signer[url]"
+               value="<%= @config['url'] %>"
+               class="base-input" placeholder="http://192.168.1.10:3000"
+               autocomplete="off">
+        <label class="label">
+          <span class="label-text-alt text-base-content/60">Base URL of your pdf-signing-api instance (no trailing slash).</span>
+        </label>
+      </div>
+
+      <div class="form-control">
+        <label class="label" for="external_signer_secret">
+          <span class="label-text font-medium">Bearer token</span>
+        </label>
+        <input type="password" id="external_signer_secret" name="external_signer[secret]"
+               value="<%= @config['secret'] %>"
+               class="base-input" placeholder="••••••••"
+               autocomplete="new-password">
+        <label class="label">
+          <span class="label-text-alt text-base-content/60">Must match <code class="font-mono">BEARER_TOKEN</code> in pdf-signing-api.</span>
+        </label>
+      </div>
+
+      <% if @config['url'].present? %>
+        <div class="alert <%= @config['enabled'] ? 'alert-success' : 'alert-warning' %> py-3">
+          <% if @config['enabled'] %>
+            <%= svg_icon('check', class: 'w-5 h-5') %>
+            <span>External signer is <strong>active</strong> &mdash; <code class="font-mono text-sm"><%= @config['url'] %></code></span>
+          <% else %>
+            <%= svg_icon('alert_triangle', class: 'w-5 h-5') %>
+            <span>External signer is configured but <strong>disabled</strong>. Internal certificate will be used.</span>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="form-control pt-2">
+        <button type="submit" class="base-button">Save</button>
+      </div>
+    <% end %>
+  </div>
+</div>

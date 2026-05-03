@@ -39,6 +39,13 @@
           <%= link_to t('e_signature'), settings_esign_path, class: 'text-base hover:bg-base-300' %>
         </li>
       <% end %>
+      <% unless Docuseal.multitenant? %>
+        <% if can?(:read, EncryptedConfig.new(key: EncryptedConfig::EXTERNAL_SIGNER_KEY, account: current_account)) %>
+          <li>
+            <%= link_to 'External Signer', settings_external_signer_path, class: 'text-base hover:bg-base-300' %>
+          </li>
+        <% end %>
+      <% end %>
       <% if can?(:read, AccountConfig) %>
         <li>
           <%= link_to t('personalization'), settings_personalization_path, class: 'text-base hover:bg-base-300' %>
