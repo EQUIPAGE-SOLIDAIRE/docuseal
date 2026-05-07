@@ -5,7 +5,7 @@ class ExternalSignerSettingsController < ApplicationController
   authorize_resource :encrypted_config, parent: false
 
   def show
-    @config = Docuseal.external_signer_config
+    @config = Docuseal.external_signer_config(current_account)
   end
 
   def create
