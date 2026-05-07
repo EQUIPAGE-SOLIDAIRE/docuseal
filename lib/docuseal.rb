@@ -76,8 +76,9 @@ module Docuseal
     ENV['ACTIVE_STORAGE_PUBLIC'] == 'true'
   end
 
-  def external_signer_config(account = nil) # rubocop:disable Lint/UnusedMethodArgument
-    db = EncryptedConfig.find_by(account: nil, key: EncryptedConfig::EXTERNAL_SIGNER_KEY)&.value || {}
+  def external_signer_config(account = nil)
+    db = EncryptedConfig.find_by(account:, key: EncryptedConfig::EXTERNAL_SIGNER_KEY)&.value ||
+         EncryptedConfig.find_by(account: nil, key: EncryptedConfig::EXTERNAL_SIGNER_KEY)&.value || {}
     {
       'url' => db['url'].presence || EXTERNAL_SIGNER_URL_ENV,
       'secret' => db['secret'].presence || EXTERNAL_SIGNER_SECRET_ENV,
