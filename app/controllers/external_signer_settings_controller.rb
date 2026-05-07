@@ -5,7 +5,7 @@ class ExternalSignerSettingsController < ApplicationController
   authorize_resource :encrypted_config, parent: false
 
   def show
-    @config = Docuseal.external_signer_config(current_account)
+    @config = Docuseal.external_signer_config
   end
 
   def create
@@ -18,7 +18,7 @@ class ExternalSignerSettingsController < ApplicationController
     }
 
     if @encrypted_config.save
-      ExternalSigner.clear_certificate_cache!(current_account)
+      ExternalSigner.clear_certificate_cache!
       redirect_to settings_external_signer_path, notice: I18n.t('changes_have_been_saved')
     else
       render :show, status: :unprocessable_content
@@ -29,7 +29,7 @@ class ExternalSignerSettingsController < ApplicationController
 
   def load_encrypted_config
     @encrypted_config = EncryptedConfig.find_or_initialize_by(
-      account: current_account,
+      account: nil,
       key: EncryptedConfig::EXTERNAL_SIGNER_KEY
     )
   end
