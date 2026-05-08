@@ -73,8 +73,11 @@
           <% @pkcs_list.each do |item| %>
             <% next if item['pkcs'].blank? %>
             <tr scope="row" class="group">
-              <td>
-                <%= item['name'] %>
+              <td class="flex items-center space-x-1">
+                <% if item['external'] %>
+                  <%= svg_icon('discount_check_filled', class: 'w-6 h-6 text-green-500') %>
+                <% end %>
+                <span><%= item['name'] %></span>
               </td>
               <td>
                 <%= l(item['pkcs'].certificate.not_after.to_date, format: :long, locale: current_account.locale) %>
@@ -84,6 +87,10 @@
                   <span class="badge badge-lg badge-info badge-outline">
                     <%= t('default') %>
                   </span>
+                <% elsif @external_signer_active %>
+                  <span class="badge badge-lg badge-ghost badge-outline">
+                    <%= t('disabled') %>
+                  </span>
                 <% elsif can?(:update, @encrypted_config) %>
                   <%= button_to settings_esign_path, method: :put, params: { name: item['name'] }, class: 'btn btn-outline btn-neutral btn-xs whitespace-nowrap', title: t('make_default'), data: { turbo_confirm: t('are_you_sure_') } do %>
                     <%= t('make_default') %>
@@ -91,7 +98,7 @@
                 <% end %>
               </td>
               <td>
-                <% if item['name'] != EsignSettingsController::DEFAULT_CERT_NAME && item['status'] != 'default' &&  can?(:destroy, @encrypted_config) %>
+                <% if !item['external'] && item['name'] != EsignSettingsController::DEFAULT_CERT_NAME && item['status'] != 'default' && !@external_signer_active && can?(:destroy, @encrypted_config) %>
                   <%= button_to settings_esign_path, params: { name: item['name'] }, method: :delete, class: 'btn btn-outline btn-error btn-xs', title: t('remove'), data: { turbo_confirm: t('are_you_sure_') } do %>
                     <%= t('remove') %>
                   <% end %>
