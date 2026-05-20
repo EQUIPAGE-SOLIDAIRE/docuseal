@@ -47,7 +47,6 @@ import ScrollTo from './elements/scroll_to'
 import SetValue from './elements/set_value'
 import ReviewForm from './elements/review_form'
 import ShowOnValue from './elements/show_on_value'
-import CustomValidation from './elements/custom_validation'
 import ToggleClasses from './elements/toggle_classes'
 import AutosizeField from './elements/autosize_field'
 import GoogleDriveFilePicker from './elements/google_drive_file_picker'
@@ -139,7 +138,6 @@ safeRegisterElement('scroll-to', ScrollTo)
 safeRegisterElement('set-value', SetValue)
 safeRegisterElement('review-form', ReviewForm)
 safeRegisterElement('show-on-value', ShowOnValue)
-safeRegisterElement('custom-validation', CustomValidation)
 safeRegisterElement('toggle-classes', ToggleClasses)
 safeRegisterElement('autosize-field', AutosizeField)
 safeRegisterElement('google-drive-file-picker', GoogleDriveFilePicker)
@@ -170,6 +168,8 @@ safeRegisterElement('template-builder', class extends HTMLElement {
       withLogo: this.dataset.withLogo !== 'false',
       withFieldsDetection: this.dataset.withFieldsDetection === 'true',
       withDetectExistingFields: this.dataset.withDetectExistingFields === 'true',
+      withRevisions: true,
+      withRevisionsMenu: this.dataset.withRevisionsMenu === 'true',
       editable: this.dataset.editable !== 'false',
       authenticityToken: document.querySelector('meta[name="csrf-token"]')?.content,
       withCustomFields: true,
