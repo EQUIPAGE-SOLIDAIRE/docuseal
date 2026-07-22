@@ -7,11 +7,13 @@ class SubmitFormDeclineController < ApplicationController
   before_action :load_submitter
 
   def create
-    return redirect_to submit_form_path(@submitter.slug) if @submitter.declined_at? ||
+    return redirect_to submit_form_path(@submitter.slug) if declining_disabled? ||
+                                                            @submitter.declined_at? ||
                                                             @submitter.completed_at? ||
                                                             @submitter.submission.archived_at? ||
                                                             @submitter.submission.expired? ||
                                                             @submitter.submission.template&.archived_at? ||
+                                                            @submitter.viewer? ||
                                                             !Submitters::AuthorizedForForm.call(@submitter,
                                                                                                 current_user,
                                                                                                 request)
@@ -34,6 +36,10 @@ class SubmitFormDeclineController < ApplicationController
   end
 
   private
+
+  def declining_disabled?
+    @submitter.account.account_configs.find_by(key: AccountConfig::ALLOW_TO_DECLINE_KEY)&.value == false
+  end
 
   def load_submitter
     @submitter = Submitter.find_by!(slug: params[:submit_form_slug])

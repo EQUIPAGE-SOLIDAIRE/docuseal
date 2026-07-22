@@ -93,9 +93,12 @@ class StartFormController < ApplicationController
 
     SearchEntries.enqueue_reindex(submitter)
 
-    return unless submitter.submission.expire_at?
+    expire_at = submitter.submission.expire_at
 
-    ProcessSubmissionExpiredJob.perform_at(submitter.submission.expire_at, 'submission_id' => submitter.submission_id)
+    return unless expire_at
+
+    ProcessSubmissionExpiredJob.perform_at(expire_at, 'submission_id' => submitter.submission_id,
+                                                      'expire_at' => expire_at.to_i)
   end
 
   def load_resubmit_submitter
@@ -108,12 +111,16 @@ class StartFormController < ApplicationController
   end
 
   def can_resubmit?(submitter)
-    submitter.account.account_configs.find_or_initialize_by(key: AccountConfig::ALLOW_TO_RESUBMIT).value != false
+    submitter.completed_at? && submitter.completed_at > 14.days.ago &&
+      %w[api embed mcp].exclude?(submitter.submission.source) &&
+      submitter.account.account_configs.find_or_initialize_by(key: AccountConfig::ALLOW_TO_RESUBMIT).value != false
   end
 
   def authorize_start!
-    return redirect_to submit_form_path(@resubmit_submitter.slug) if @resubmit_submitter && @template.archived_at?
-    return redirect_to start_form_path(@template.slug) if @template.archived_at?
+    is_archived = @template.archived_at? || @template.account.archived_at?
+
+    return redirect_to submit_form_path(@resubmit_submitter.slug) if @resubmit_submitter && is_archived
+    return redirect_to start_form_path(@template.slug) if is_archived
 
     return if @resubmit_submitter
     return if @template.shared_link? || (current_user && current_ability.can?(:read, @template))
@@ -134,14 +141,15 @@ class StartFormController < ApplicationController
 
     submitter ||=
       Submitter
-      .where(submission: template.submissions.where(expire_at: Time.current..)
-                                 .or(template.submissions.where(expire_at: nil)).where(archived_at: nil))
+      .where(submission: template.submissions.non_expired.active)
       .order(id: :desc)
       .where(declined_at: nil)
       .where(external_id: nil)
       .where(template.preferences['shared_link_2fa'] == true ? {} : { ip: [nil, request.remote_ip] })
       .then { |rel| params[:resubmit].present? || params[:selfsign].present? ? rel.where(completed_at: nil) : rel }
       .find_or_initialize_by(find_params)
+
+    submitter = Submitter.new(find_params) if submitter.submission&.completed_at? && submitter.viewer?
 
     submitter.name = required_params['name'] if submitter.new_record?
 

@@ -5,30 +5,45 @@ class ProcessSubmitterCompletionJob
 
   def perform(params = {})
     submitter = Submitter.find(params['submitter_id'])
+    submission = submitter.submission
 
     create_completed_submitter!(submitter)
 
-    is_all_completed = !submitter.submission.submitters.exists?(completed_at: nil)
+    is_last =
+      if params.key?('is_last')
+        params['is_last']
+      else
+        viewer_uuids = submission.template_submitters.to_a.filter_map { |s| s['uuid'] if s['is_viewer'] }
+
+        incomplete = submission.submitters.where(completed_at: nil)
+        incomplete = incomplete.where.not(uuid: viewer_uuids) if viewer_uuids.present?
+
+        !incomplete.exists? &&
+          submitter.completed_at == submission.submitters.maximum(:completed_at)
+      end
 
     Submissions::EnsureResultGenerated.call(submitter)
 
-    if is_all_completed && submitter.completed_at == submitter.submission.submitters.maximum(:completed_at)
-      if submitter.submission.account.account_configs.exists?(key: AccountConfig::COMBINE_PDF_RESULT_KEY, value: true)
+    if is_last
+      if submission.account.account_configs.exists?(key: AccountConfig::COMBINE_PDF_RESULT_KEY, value: true)
         Submissions::EnsureCombinedGenerated.call(submitter)
       end
 
-      Submissions::EnsureAuditGenerated.call(submitter.submission)
+      Submissions::EnsureAuditGenerated.call(submission)
 
       enqueue_completed_emails(submitter)
     end
 
     create_completed_documents!(submitter)
 
-    if !is_all_completed && submitter.submission.submitters_order_preserved? && params['send_invitation_email'] != false
-      enqueue_next_submitter_request_notification(submitter)
+    if !submission.completed_at && submission.submitters_order_preserved? && params['send_invitation_email'] != false &&
+       Submission.exists?(id: submission.id, completed_at: nil)
+      next_submitters = enqueue_next_submitter_request_notification(submitter)
+
+      enqueue_next_submitter_viewer_notification(submission, next_submitters) unless is_last
     end
 
-    enqueue_completed_webhooks(submitter, is_all_completed:)
+    enqueue_completed_webhooks(submitter, is_last:)
   end
 
   def create_completed_submitter!(submitter)
@@ -77,7 +92,7 @@ class ProcessSubmitterCompletionJob
     end
   end
 
-  def enqueue_completed_webhooks(submitter, is_all_completed: false)
+  def enqueue_completed_webhooks(submitter, is_last: false)
     event_uuids = {}
 
     WebhookUrls.for_account_id(submitter.account_id, %w[form.completed submission.completed]).each do |webhook|
@@ -89,7 +104,7 @@ class ProcessSubmitterCompletionJob
                                                          'webhook_url_id' => webhook.id)
       end
 
-      next unless webhook.events.include?('submission.completed') && is_all_completed
+      next unless webhook.events.include?('submission.completed') && is_last
 
       event_uuids['submission.completed'] ||= SecureRandom.uuid
 
@@ -137,7 +152,7 @@ class ProcessSubmitterCompletionJob
     return if configs.value['enabled'] == false
 
     to = submitter.submission.submitters.reject { |e| e.preferences['send_email'] == false }
-                  .sort_by(&:completed_at).select(&:email?).map(&:friendly_name)
+                  .sort_by { |e| e.completed_at || Time.current }.select(&:email?).map(&:friendly_name)
 
     return if to.blank?
 
@@ -157,9 +172,9 @@ class ProcessSubmitterCompletionJob
     bcc.to_s.scan(User::EMAIL_REGEXP)
   end
 
-  def enqueue_next_submitter_request_notification(submitter)
+  def enqueue_next_submitter_request_notification(submitter) # rubocop:disable Metrics/PerceivedComplexity
     submission = submitter.submission
-    submitters_index = submission.submitters.index_by(&:uuid)
+    submitters_index = submission.submitters.reject(&:viewer?).index_by(&:uuid)
 
     next_submitter_items =
       if submission.template_submitters.any? { |s| s['order'] }
@@ -188,5 +203,43 @@ class ProcessSubmitterCompletionJob
     next_submitters = submitters_index.values_at(*Array.wrap(next_submitter_items).pluck('uuid')).compact
 
     Submitters.send_signature_requests(next_submitters)
+
+    next_submitters
+  end
+
+  def enqueue_next_submitter_viewer_notification(submission, next_submitters)
+    viewers = submission.submitters.select(&:viewer?)
+
+    return [] if viewers.blank?
+
+    next_submitter_uuids = next_submitters.to_set(&:uuid)
+    viewers_index = viewers.index_by(&:uuid)
+
+    next_viewers =
+      if submission.template_submitters.any? { |s| s['order'] }
+        next_orders = submission.template_submitters
+                                .select { |s| next_submitter_uuids.include?(s['uuid']) }
+                                .pluck('order')
+
+        submission.template_submitters.filter_map do |s|
+          viewers_index[s['uuid']] if next_orders.include?(s['order'])
+        end
+      else
+        preceding_submitter_uuid = nil
+
+        submission.template_submitters.filter_map do |template_submitter|
+          viewer = viewers_index[template_submitter['uuid']]
+
+          if viewer
+            viewer if next_submitter_uuids.include?(preceding_submitter_uuid)
+          else
+            preceding_submitter_uuid = template_submitter['uuid']
+
+            nil
+          end
+        end
+      end
+
+    Submitters.send_signature_requests(next_viewers)
   end
 end

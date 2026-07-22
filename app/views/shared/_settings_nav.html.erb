@@ -12,12 +12,12 @@
       <li>
         <%= link_to t('account'), settings_account_path, class: 'text-base hover:bg-base-300' %>
       </li>
+      <% if (!Docuseal.multitenant? || EncryptedConfig.exists?(key: EncryptedConfig::EMAIL_SMTP_KEY, account: current_account)) && can?(:read, EncryptedConfig.new(key: EncryptedConfig::EMAIL_SMTP_KEY, account: current_account)) && ENV['SMTP_ADDRESS'].blank? && true_user == current_user %>
+        <li>
+          <%= link_to t('email'), settings_email_index_path, class: 'text-base hover:bg-base-300' %>
+        </li>
+      <% end %>
       <% unless Docuseal.multitenant? %>
-        <% if can?(:read, EncryptedConfig.new(key: EncryptedConfig::EMAIL_SMTP_KEY, account: current_account)) && ENV['SMTP_ADDRESS'].blank? && true_user == current_user %>
-          <li>
-            <%= link_to t('email'), settings_email_index_path, class: 'text-base hover:bg-base-300' %>
-          </li>
-        <% end %>
         <% if can?(:read, EncryptedConfig.new(key: EncryptedConfig::FILES_STORAGE_KEY, account: current_account)) && true_user == current_user && ENV['S3_ATTACHMENTS_BUCKET'].blank? && ENV['GCS_BUCKET'].blank? && ENV['AZURE_CONTAINER'].blank? %>
           <li>
             <%= link_to t('storage'), settings_storage_index_path, class: 'text-base hover:bg-base-300' %>
@@ -139,7 +139,7 @@
         <%= capture do %>
           <div class="tooltip" data-tip="<%= t('ai_assistant') %>">
             <a href="<%= Docuseal::CHATGPT_URL %>" target="_blank" class="btn btn-circle btn-primary btn-md">
-              <%= svg_icon('brand_openai', class: 'w-8 h-8') %>
+              <%= svg_icon('message', class: 'w-8 h-8') %>
             </a>
           </div>
         <% end %>
