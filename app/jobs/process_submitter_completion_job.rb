@@ -3,6 +3,9 @@
 class ProcessSubmitterCompletionJob
   include Sidekiq::Job
 
+  BCC_LIMIT = 14
+  TooManyBcc = Class.new(StandardError)
+
   def perform(params = {})
     submitter = Submitter.find(params['submitter_id'])
     submission = submitter.submission
@@ -120,37 +123,49 @@ class ProcessSubmitterCompletionJob
 
     user = submission.created_by_user || template.author
 
+    copy_email_configs = AccountConfigs.find_or_initialize_for_key(submitter.account,
+                                                                   AccountConfig::SUBMITTER_DOCUMENTS_COPY_EMAIL_KEY)
+
+    is_copy_email_enabled = documents_copy_email_enabled?(submitter, copy_email_configs)
+
     if submitter.account.users.exists?(id: user.id) && submission.preferences['send_email'] != false &&
        (!template || template.preferences['completed_notification_email_enabled'] != false)
       user_submitter = submission.submitters.find { |s| s.email == user.email }
 
       is_sent_to_user =
         if user.role != 'integration' &&
-           (!user_submitter || user_submitter.preferences['send_email'] == false) &&
+           (!user_submitter || user_submitter.preferences['send_email'] == false || !is_copy_email_enabled) &&
            user.user_configs.find_by(key: UserConfig::RECEIVE_COMPLETED_EMAIL)&.value != false
           SubmitterMailer.completed_email(submitter, user).deliver_later!
 
           true
         end
 
-      build_bcc_addresses(submission).each do |to|
-        next if is_sent_to_user && to == user.email
-
-        SubmitterMailer.completed_email(submitter, user, to:).deliver_later!
-      end
+      enqueue_bcc_completed_emails(submitter, user, is_sent_to_user)
     end
 
-    maybe_enqueue_copy_emails(submitter)
+    enqueue_copy_emails(submitter, copy_email_configs) if is_copy_email_enabled
   end
 
-  def maybe_enqueue_copy_emails(submitter)
-    return if submitter.template&.preferences&.dig('documents_copy_email_enabled') == false
+  def enqueue_bcc_completed_emails(submitter, user, is_sent_to_user)
+    bcc_addresses = build_bcc_addresses(submitter.submission).uniq
 
-    configs = AccountConfigs.find_or_initialize_for_key(submitter.account,
-                                                        AccountConfig::SUBMITTER_DOCUMENTS_COPY_EMAIL_KEY)
+    raise TooManyBcc, submitter.account_id if Docuseal.multitenant? && bcc_addresses.size > BCC_LIMIT
 
-    return if configs.value['enabled'] == false
+    bcc_addresses.each do |to|
+      next if is_sent_to_user && to == user.email
 
+      SubmitterMailer.completed_email(submitter, user, to:).deliver_later!
+    end
+  end
+
+  def documents_copy_email_enabled?(submitter, configs)
+    return false if submitter.template&.preferences&.dig('documents_copy_email_enabled') == false
+
+    configs.value['enabled'] != false
+  end
+
+  def enqueue_copy_emails(submitter, configs)
     to = submitter.submission.submitters.reject { |e| e.preferences['send_email'] == false }
                   .sort_by { |e| e.completed_at || Time.current }.select(&:email?).map(&:friendly_name)
 

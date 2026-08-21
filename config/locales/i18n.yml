@@ -53,6 +53,28 @@ en: &en
   require_all_recipients: Require all recipients
   stripe_account_has_been_connected: Stripe account has been connected.
   re_connect_stripe: Re-connect Stripe
+  paypal_integration: PayPal Integration
+  paypal_account_has_been_connected: PayPal account has been connected.
+  re_connect_paypal: Re-connect PayPal
+  disconnect: Disconnect
+  failed_to_connect_paypal_please_try_again: Failed to connect PayPal. Please try again.
+  paypal_connection_was_not_completed: PayPal connection was not completed.
+  disconnecting_your_paypal_account_will_prevent_you_from_offering_paypal_services_and_products_on_your_website_do_you_wish_to_continue: Disconnecting your PayPal account will prevent you from offering PayPal services and products on your website. Do you wish to continue?
+  attention_you_currently_cannot_receive_payments_due_to_restriction_on_your_paypal_account_please_reach_out_to_paypal_customer_support_or_connect_to_paypal_com_for_more_information: 'Attention: You currently cannot receive payments due to restriction on your PayPal account. Please reach out to PayPal Customer Support or connect to https://www.paypal.com for more information.'
+  attention_please_confirm_your_email_address_on_paypal_com_in_order_to_receive_payments_you_currently_cannot_receive_payments: 'Attention: Please confirm your email address on https://www.paypal.com/businessprofile/settings in order to receive payments! You currently cannot receive payments.'
+  payment_receipt: Payment Receipt
+  amount_paid: Amount paid
+  transaction: Transaction
+  transaction_id: Transaction ID
+  order_id: Order ID
+  payment_date: Date
+  paid_by: Paid by
+  paid_to: Paid to
+  business: Business
+  country: Country
+  payer_id: Payer ID
+  merchant_id: Merchant ID
+  breakdown: Breakdown
   bcc_recipients: BCC recipients
   resend_pending: Re-send pending
   always_enforce_signing_order: Always enforce the signing order
@@ -206,6 +228,7 @@ en: &en
   profile_details: Profile Details
   sign_up_with_google: Sign up with Google
   sign_up_with_microsoft: Sign up with Microsoft
+  redirecting_to_provider: Redirecting to %{provider}...
   by_creating_an_account_you_agree_to_our_html: 'By creating an account, you agree to our <a target="_blank" href="https://www.docuseal.com/privacy">Privacy Policy</a> and <a target="_blank" href="https://www.docuseal.com/terms">Terms of Service</a>.'
   enter_email_to_continue: Enter email to continue
   account: Account
@@ -454,7 +477,7 @@ en: &en
   back_to_active: Back to Active
   submissions: Submissions
   templates: Templates
-  document_templates_html: <span class="hidden md:inline">Document</span> Templates
+  document_templates_html: <span class="hidden lg:inline">Document</span> Templates
   archived: Archived
   search: Search
   submissions_not_found: Submissions not Found
@@ -574,6 +597,9 @@ en: &en
   there_are_no_signatures: There are no signatures
   signed_with_trusted_certificate: Signed with trusted certificate
   signed_with_external_certificate: Signed with external certificate
+  signature_valid: Signature valid
+  signature_verification_failed: Signature verification failed
+  contains_unsigned_changes_after_the_last_signature: Contains unsigned changes after the last signature
   setup_2fa_to_continue: Setup 2FA to continue.
   create_a_new_account: Create a new account.
   you_are_already_signed_in: You are already signed in.
@@ -946,6 +972,7 @@ en: &en
   undo: Undo
   redo: Redo
   add_variable: Add variable
+  variable: Variable
   enter_a_url_or_variable_name: Enter a URL or variable name
   new_token: New token
   token: Token
@@ -1093,9 +1120,16 @@ en: &en
     submission_submitters: Submitters list
     submission_link: Submission link
     documents_link: Documents link
+  date:
+    formats:
+      default: "%m/%d/%Y"
+      short: "%b %-d"
+      long: "%B %-d, %Y"
   time:
     formats:
-      detailed: "%B %d, %Y %H:%M:%S"
+      short: "%b %-d, %-I:%M %p"
+      long: "%B %-d, %Y at %-I:%M %p"
+      detailed: "%B %-d, %Y at %-I:%M:%S %p"
 
 es: &es
   knowledge_based_authentication: Autenticación basada en el conocimiento
@@ -1124,6 +1158,27 @@ es: &es
   stripe_integration: Integración con Stripe
   stripe_account_has_been_connected: La cuenta de Stripe ha sido conectada.
   re_connect_stripe: Volver a conectar Stripe
+  paypal_integration: Integración con PayPal
+  paypal_account_has_been_connected: La cuenta de PayPal ha sido conectada.
+  re_connect_paypal: Volver a conectar PayPal
+  failed_to_connect_paypal_please_try_again: No se pudo conectar PayPal. Por favor, inténtalo de nuevo.
+  paypal_connection_was_not_completed: La conexión con PayPal no se completó.
+  disconnecting_your_paypal_account_will_prevent_you_from_offering_paypal_services_and_products_on_your_website_do_you_wish_to_continue: Desconectar tu cuenta de PayPal impedirá que ofrezcas servicios y productos de PayPal en tu sitio web. ¿Deseas continuar?
+  attention_you_currently_cannot_receive_payments_due_to_restriction_on_your_paypal_account_please_reach_out_to_paypal_customer_support_or_connect_to_paypal_com_for_more_information: 'Atención: Actualmente no puedes recibir pagos debido a una restricción en tu cuenta de PayPal. Por favor, contacta con el Soporte al Cliente de PayPal o visita https://www.paypal.com para más información.'
+  attention_please_confirm_your_email_address_on_paypal_com_in_order_to_receive_payments_you_currently_cannot_receive_payments: 'Atención: Por favor, confirma tu dirección de correo electrónico en https://www.paypal.com/businessprofile/settings para poder recibir pagos. Actualmente no puedes recibir pagos.'
+  payment_receipt: Recibo de pago
+  amount_paid: Importe pagado
+  transaction: Transacción
+  transaction_id: ID de transacción
+  order_id: ID de pedido
+  payment_date: Fecha
+  paid_by: Pagado por
+  paid_to: Pagado a
+  business: Empresa
+  country: País
+  payer_id: ID de pagador
+  merchant_id: ID de comerciante
+  breakdown: Desglose
   private: Privado
   _variables: Variables
   your_email_address_has_been_released_immediately_you_can_now_be_added_to_your_company_team_without_waiting_for_the_deletion_period_to_end: Su dirección de correo electrónico ha sido liberada inmediatamente. Si se une a un equipo, ahora puede ser invitado al equipo de su empresa sin esperar a que finalice el período de eliminación.
@@ -1287,6 +1342,7 @@ es: &es
   profile_details: Detalles del perfil
   sign_up_with_google: Registrarse con Google
   sign_up_with_microsoft: Registrarse con Microsoft
+  redirecting_to_provider: Redirigiendo a %{provider}...
   by_creating_an_account_you_agree_to_our_html: 'Al crear una cuenta, aceptas nuestra <a target="_blank" href="https://www.docuseal.com/privacy">Política de Privacidad</a> y <a target="_blank" href="https://www.docuseal.com/terms">Términos de Servicio</a>.'
   enter_email_to_continue: Ingresa tu correo electrónico para continuar
   account: Cuenta
@@ -1535,7 +1591,7 @@ es: &es
   back_to_active: Volver a activo
   submissions: Envíos
   templates: Plantillas
-  document_templates_html: Plantillas <span class="hidden md:inline">de documento</span>
+  document_templates_html: Plantillas <span class="hidden lg:inline">de documento</span>
   archived: Archivado
   search: Buscar
   submissions_not_found: Envíos no encontrados
@@ -1655,6 +1711,9 @@ es: &es
   there_are_no_signatures: No hay firmas
   signed_with_trusted_certificate: Firmado con certificado de confianza
   signed_with_external_certificate: Firmado con certificado externo
+  signature_valid: Firma válida
+  signature_verification_failed: Verificación de firma fallida
+  contains_unsigned_changes_after_the_last_signature: Contiene cambios no firmados después de la última firma
   setup_2fa_to_continue: Configura 2FA para continuar.
   create_a_new_account: Crear una nueva cuenta.
   you_are_already_signed_in: Ya has iniciado sesión.
@@ -2024,6 +2083,7 @@ es: &es
   undo: Deshacer
   redo: Rehacer
   add_variable: Agregar variable
+  variable: Variable
   enter_a_url_or_variable_name: Ingrese una URL o nombre de variable
   new_token: Nuevo token
   token: Token
@@ -2171,9 +2231,30 @@ es: &es
     submission_submitters: Lista de firmantes
     submission_link: Enlace del envío
     documents_link: Enlace de los documentos
+  date:
+    abbr_month_names:
+      -
+      - ene
+      - feb
+      - mar
+      - abr
+      - may
+      - jun
+      - jul
+      - ago
+      - sept
+      - oct
+      - nov
+      - dic
+    formats:
+      default: "%d/%m/%Y"
+      short: "%-d %b"
+      long: "%-d de %B de %Y"
   time:
     formats:
-      detailed: "%-d de %B de %Y %H:%M:%S"
+      short: "%-d %b, %-H:%M"
+      long: "%-d de %B de %Y a las %-H:%M"
+      detailed: "%-d de %B de %Y a las %-H:%M:%S"
 
 it: &it
   knowledge_based_authentication: Autenticazione basata sulla conoscenza
@@ -2202,6 +2283,27 @@ it: &it
   stripe_integration: Integrazione Stripe
   stripe_account_has_been_connected: L'account Stripe è stato collegato.
   re_connect_stripe: Ricollega Stripe
+  paypal_integration: Integrazione PayPal
+  paypal_account_has_been_connected: L'account PayPal è stato collegato.
+  re_connect_paypal: Ricollega PayPal
+  failed_to_connect_paypal_please_try_again: Impossibile collegare PayPal. Riprova.
+  paypal_connection_was_not_completed: La connessione con PayPal non è stata completata.
+  disconnecting_your_paypal_account_will_prevent_you_from_offering_paypal_services_and_products_on_your_website_do_you_wish_to_continue: La disconnessione del tuo account PayPal ti impedirà di offrire servizi e prodotti PayPal sul tuo sito web. Vuoi continuare?
+  attention_you_currently_cannot_receive_payments_due_to_restriction_on_your_paypal_account_please_reach_out_to_paypal_customer_support_or_connect_to_paypal_com_for_more_information: 'Attenzione: Al momento non puoi ricevere pagamenti a causa di una restrizione sul tuo account PayPal. Contatta l''Assistenza Clienti PayPal o visita https://www.paypal.com per maggiori informazioni.'
+  attention_please_confirm_your_email_address_on_paypal_com_in_order_to_receive_payments_you_currently_cannot_receive_payments: 'Attenzione: Conferma il tuo indirizzo email su https://www.paypal.com/businessprofile/settings per poter ricevere pagamenti! Al momento non puoi ricevere pagamenti.'
+  payment_receipt: Ricevuta di pagamento
+  amount_paid: Importo pagato
+  transaction: Transazione
+  transaction_id: ID transazione
+  order_id: ID ordine
+  payment_date: Data
+  paid_by: Pagato da
+  paid_to: Pagato a
+  business: Azienda
+  country: Paese
+  payer_id: ID pagatore
+  merchant_id: ID esercente
+  breakdown: Dettaglio
   private: Privato
   _variables: Variabili
   your_email_address_has_been_released_immediately_you_can_now_be_added_to_your_company_team_without_waiting_for_the_deletion_period_to_end: Il tuo indirizzo email è stato rilasciato immediatamente. Se stai per unirti a un team, ora puoi essere invitato nel team della tua azienda senza aspettare la fine del periodo di eliminazione.
@@ -2365,6 +2467,7 @@ it: &it
   profile_details: Dettagli del profilo
   sign_up_with_google: Registrati con Google
   sign_up_with_microsoft: Registrati con Microsoft
+  redirecting_to_provider: Reindirizzamento a %{provider}...
   by_creating_an_account_you_agree_to_our_html: 'Creando un account, accetti la nostra <a target="_blank" href="https://www.docuseal.com/privacy">Privacy Policy</a> e i nostri <a target="_blank" href="https://www.docuseal.com/terms">Termini di servizio</a>.'
   enter_email_to_continue: "Inserisci l'email per continuare"
   account: Account
@@ -2613,7 +2716,7 @@ it: &it
   back_to_active: Torna attivo
   submissions: Invii
   templates: Modelli
-  document_templates_html: Modelli <span class="hidden md:inline">di documento</span>
+  document_templates_html: Modelli <span class="hidden lg:inline">di documento</span>
   archived: Archiviato
   search: Cerca
   submissions_not_found: Invii non trovati
@@ -2733,6 +2836,9 @@ it: &it
   there_are_no_signatures: Non ci sono firme
   signed_with_trusted_certificate: Firmato con certificato affidabile
   signed_with_external_certificate: Firmato con certificato esterno
+  signature_valid: Firma valida
+  signature_verification_failed: Verifica della firma non riuscita
+  contains_unsigned_changes_after_the_last_signature: Contiene modifiche non firmate dopo l’ultima firma
   setup_2fa_to_continue: Configura 2FA per continuare.
   create_a_new_account: Crea un nuovo account.
   you_are_already_signed_in: "Hai già effettuato l'accesso."
@@ -3102,6 +3208,7 @@ it: &it
   undo: Annulla
   redo: Ripeti
   add_variable: Aggiungi variabile
+  variable: Variabile
   enter_a_url_or_variable_name: Inserisci un URL o nome variabile
   new_token: Nuovo token
   token: Token
@@ -3249,9 +3356,16 @@ it: &it
     submission_submitters: Lista dei firmatari
     submission_link: Link dell'invio
     documents_link: Link dei documenti
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%-d %b"
+      long: "%-d %B %Y"
   time:
     formats:
-      detailed: "%d %B %Y %H:%M:%S"
+      short: "%-d %b, %H:%M"
+      long: "%-d %B %Y alle ore %H:%M"
+      detailed: "%-d %B %Y alle ore %H:%M:%S"
 
 fr: &fr
   knowledge_based_authentication: Authentification basée sur la connaissance
@@ -3280,6 +3394,27 @@ fr: &fr
   stripe_integration: Intégration Stripe
   stripe_account_has_been_connected: Le compte Stripe a été connecté.
   re_connect_stripe: Reconnecter Stripe
+  paypal_integration: Intégration PayPal
+  paypal_account_has_been_connected: Le compte PayPal a été connecté.
+  re_connect_paypal: Reconnecter PayPal
+  failed_to_connect_paypal_please_try_again: Échec de la connexion à PayPal. Veuillez réessayer.
+  paypal_connection_was_not_completed: La connexion à PayPal n'a pas été complétée.
+  disconnecting_your_paypal_account_will_prevent_you_from_offering_paypal_services_and_products_on_your_website_do_you_wish_to_continue: Déconnecter votre compte PayPal vous empêchera de proposer des services et produits PayPal sur votre site web. Voulez-vous continuer ?
+  attention_you_currently_cannot_receive_payments_due_to_restriction_on_your_paypal_account_please_reach_out_to_paypal_customer_support_or_connect_to_paypal_com_for_more_information: 'Attention : Vous ne pouvez actuellement pas recevoir de paiements en raison d''une restriction sur votre compte PayPal. Veuillez contacter le service client PayPal ou visiter https://www.paypal.com pour plus d''informations.'
+  attention_please_confirm_your_email_address_on_paypal_com_in_order_to_receive_payments_you_currently_cannot_receive_payments: 'Attention : Veuillez confirmer votre adresse e-mail sur https://www.paypal.com/businessprofile/settings afin de pouvoir recevoir des paiements ! Vous ne pouvez actuellement pas recevoir de paiements.'
+  payment_receipt: Reçu de paiement
+  amount_paid: Montant payé
+  transaction: Transaction
+  transaction_id: ID de transaction
+  order_id: ID de commande
+  payment_date: Date
+  paid_by: Payé par
+  paid_to: Payé à
+  business: Entreprise
+  country: Pays
+  payer_id: ID payeur
+  merchant_id: ID marchand
+  breakdown: Détail
   private: Privé
   _variables: Variables
   your_email_address_has_been_released_immediately_you_can_now_be_added_to_your_company_team_without_waiting_for_the_deletion_period_to_end: Votre adresse e-mail a été libérée immédiatement. Si vous rejoignez une équipe, vous pouvez maintenant être invité dans l'équipe de votre entreprise sans attendre la fin de la période de suppression.
@@ -3443,6 +3578,7 @@ fr: &fr
   profile_details: Détails du profil
   sign_up_with_google: S’inscrire avec Google
   sign_up_with_microsoft: S’inscrire avec Microsoft
+  redirecting_to_provider: Redirection vers %{provider}...
   by_creating_an_account_you_agree_to_our_html: En créant un compte, vous acceptez notre <a target="_blank" href="https://www.docuseal.com/privacy">Politique de confidentialité</a> et nos <a target="_blank" href="https://www.docuseal.com/terms">Conditions d’utilisation</a>.
   enter_email_to_continue: Entrez votre e‑mail pour continuer
   account: Compte
@@ -3691,7 +3827,7 @@ fr: &fr
   back_to_active: Retour aux actifs
   submissions: Soumissions
   templates: Modèles
-  document_templates_html: Modèles <span class="hidden md:inline">de documents</span>
+  document_templates_html: Modèles <span class="hidden lg:inline">de documents</span>
   archived: Archivé
   search: Rechercher
   submissions_not_found: Soumissions introuvables
@@ -3811,6 +3947,9 @@ fr: &fr
   there_are_no_signatures: Il n’y a pas de signatures
   signed_with_trusted_certificate: Signé avec un certificat de confiance
   signed_with_external_certificate: Signé avec un certificat externe
+  signature_valid: Signature valide
+  signature_verification_failed: Échec de la vérification de la signature
+  contains_unsigned_changes_after_the_last_signature: Contient des modifications non signées après la dernière signature
   setup_2fa_to_continue: Configurez la 2FA pour continuer.
   create_a_new_account: Créer un nouveau compte.
   you_are_already_signed_in: Vous êtes déjà connecté.
@@ -4177,6 +4316,7 @@ fr: &fr
   undo: Annuler
   redo: Rétablir
   add_variable: Ajouter une variable
+  variable: Variable
   enter_a_url_or_variable_name: Entrez une URL ou un nom de variable
   new_token: Nouveau jeton
   token: Jeton
@@ -4324,9 +4464,29 @@ fr: &fr
     submission_submitters: Liste des signataires
     submission_link: Lien de la soumission
     documents_link: Lien des documents
+  date:
+    abbr_month_names:
+      -
+      - janv.
+      - févr.
+      - mars
+      - avr.
+      - mai
+      - juin
+      - juil.
+      - août
+      - sept.
+      - oct.
+      - nov.
+      - déc.
+    formats:
+      short: "%-d %b"
+      long: "%-d %B %Y"
   time:
     formats:
-      detailed: "%A %d %B %Y %Hh%Mm%Ss"
+      short: "%-d %b, %H:%M"
+      long: "%-d %B %Y à %H:%M"
+      detailed: "%-d %B %Y à %H:%M:%S"
 
 pt: &pt
   knowledge_based_authentication: Autenticação baseada em conhecimento
@@ -4355,6 +4515,27 @@ pt: &pt
   stripe_integration: Integração com Stripe
   stripe_account_has_been_connected: Conta Stripe foi conectada.
   re_connect_stripe: Reconectar Stripe
+  paypal_integration: Integração com PayPal
+  paypal_account_has_been_connected: Conta PayPal foi conectada.
+  re_connect_paypal: Reconectar PayPal
+  failed_to_connect_paypal_please_try_again: Falha ao conectar PayPal. Tente novamente.
+  paypal_connection_was_not_completed: A conexão com PayPal não foi concluída.
+  disconnecting_your_paypal_account_will_prevent_you_from_offering_paypal_services_and_products_on_your_website_do_you_wish_to_continue: Desconectar sua conta PayPal impedirá que você ofereça serviços e produtos PayPal no seu site. Deseja continuar?
+  attention_you_currently_cannot_receive_payments_due_to_restriction_on_your_paypal_account_please_reach_out_to_paypal_customer_support_or_connect_to_paypal_com_for_more_information: 'Atenção: No momento você não pode receber pagamentos devido a uma restrição na sua conta PayPal. Entre em contato com o Suporte ao Cliente PayPal ou acesse https://www.paypal.com para mais informações.'
+  attention_please_confirm_your_email_address_on_paypal_com_in_order_to_receive_payments_you_currently_cannot_receive_payments: 'Atenção: Por favor, confirme seu endereço de e-mail em https://www.paypal.com/businessprofile/settings para poder receber pagamentos! No momento você não pode receber pagamentos.'
+  payment_receipt: Recibo de pagamento
+  amount_paid: Valor pago
+  transaction: Transação
+  transaction_id: ID da transação
+  order_id: ID do pedido
+  payment_date: Data
+  paid_by: Pago por
+  paid_to: Pago a
+  business: Empresa
+  country: País
+  payer_id: ID do pagador
+  merchant_id: ID do comerciante
+  breakdown: Detalhamento
   private: Privado
   _variables: Variáveis
   your_email_address_has_been_released_immediately_you_can_now_be_added_to_your_company_team_without_waiting_for_the_deletion_period_to_end: Seu endereço de e-mail foi liberado imediatamente. Se você estiver entrando em uma equipe, agora pode ser convidado para a equipe da sua empresa sem esperar o fim do período de exclusão.
@@ -4518,6 +4699,7 @@ pt: &pt
   profile_details: Detalhes do perfil
   sign_up_with_google: Inscrever-se com Google
   sign_up_with_microsoft: Inscrever-se com Microsoft
+  redirecting_to_provider: Redirecionando para %{provider}...
   by_creating_an_account_you_agree_to_our_html: 'Ao criar uma conta, você concorda com nossa <a target="_blank" href="https://www.docuseal.com/privacy">Política de Privacidade</a> e <a target="_blank" href="https://www.docuseal.com/terms">Termos de Serviço</a>.'
   enter_email_to_continue: Insira o e-mail para continuar
   account: Conta
@@ -4766,7 +4948,7 @@ pt: &pt
   back_to_active: Voltar para ativo
   submissions: Submissões
   templates: Modelos
-  document_templates_html: Modelos <span class="hidden md:inline">de documento</span>
+  document_templates_html: Modelos <span class="hidden lg:inline">de documento</span>
   archived: Arquivado
   search: Buscar
   submissions_not_found: Submissões não encontradas
@@ -4886,6 +5068,9 @@ pt: &pt
   there_are_no_signatures: Não há assinaturas
   signed_with_trusted_certificate: Assinado com certificado confiável
   signed_with_external_certificate: Assinado com certificado externo
+  signature_valid: Assinatura válida
+  signature_verification_failed: Falha na verificação da assinatura
+  contains_unsigned_changes_after_the_last_signature: Contém alterações não assinadas após a última assinatura
   setup_2fa_to_continue: Configure 2FA para continuar.
   create_a_new_account: Criar uma nova conta.
   you_are_already_signed_in: Você já está conectado.
@@ -5255,6 +5440,7 @@ pt: &pt
   undo: Desfazer
   redo: Refazer
   add_variable: Adicionar variável
+  variable: Variável
   enter_a_url_or_variable_name: Digite uma URL ou nome de variável
   new_token: Novo token
   token: Token
@@ -5402,9 +5588,29 @@ pt: &pt
     submission_submitters: Lista de signatários
     submission_link: Link da submissão
     documents_link: Link dos documentos
+  date:
+    abbr_month_names:
+      -
+      - jan.
+      - fev.
+      - mar.
+      - abr.
+      - mai.
+      - jun.
+      - jul.
+      - ago.
+      - set.
+      - out.
+      - nov.
+      - dez.
+    formats:
+      short: "%-d de %b"
+      long: "%-d de %B de %Y"
   time:
     formats:
-      detailed: "%A, %d de %B de %Y, %H:%M:%Sh"
+      short: "%-d de %b, %H:%M"
+      long: "%-d de %B de %Y às %H:%M"
+      detailed: "%-d de %B de %Y às %H:%M:%S"
 
 de: &de
   knowledge_based_authentication: Wissensbasierte Authentifizierung
@@ -5443,6 +5649,27 @@ de: &de
   require_all_recipients: Alle Empfänger verpflichten
   stripe_account_has_been_connected: Stripe-Konto wurde verbunden.
   re_connect_stripe: Stripe erneut verbinden
+  paypal_integration: PayPal-Integration
+  paypal_account_has_been_connected: PayPal-Konto wurde verbunden.
+  re_connect_paypal: PayPal erneut verbinden
+  failed_to_connect_paypal_please_try_again: PayPal konnte nicht verbunden werden. Bitte erneut versuchen.
+  paypal_connection_was_not_completed: Die PayPal-Verbindung wurde nicht abgeschlossen.
+  disconnecting_your_paypal_account_will_prevent_you_from_offering_paypal_services_and_products_on_your_website_do_you_wish_to_continue: Das Trennen Ihres PayPal-Kontos verhindert, dass Sie PayPal-Dienste und -Produkte auf Ihrer Website anbieten können. Möchten Sie fortfahren?
+  attention_you_currently_cannot_receive_payments_due_to_restriction_on_your_paypal_account_please_reach_out_to_paypal_customer_support_or_connect_to_paypal_com_for_more_information: 'Achtung: Sie können derzeit aufgrund einer Einschränkung Ihres PayPal-Kontos keine Zahlungen empfangen. Bitte wenden Sie sich an den PayPal-Kundenservice oder besuchen Sie https://www.paypal.com für weitere Informationen.'
+  attention_please_confirm_your_email_address_on_paypal_com_in_order_to_receive_payments_you_currently_cannot_receive_payments: 'Achtung: Bitte bestätigen Sie Ihre E-Mail-Adresse auf https://www.paypal.com/businessprofile/settings, um Zahlungen empfangen zu können! Sie können derzeit keine Zahlungen empfangen.'
+  payment_receipt: Zahlungsbeleg
+  amount_paid: Gezahlter Betrag
+  transaction: Transaktion
+  transaction_id: Transaktions-ID
+  order_id: Bestell-ID
+  payment_date: Datum
+  paid_by: Gezahlt von
+  paid_to: Gezahlt an
+  business: Unternehmen
+  country: Land
+  payer_id: Zahler-ID
+  merchant_id: Händler-ID
+  breakdown: Aufschlüsselung
   bcc_recipients: BCC-Empfänger
   resend_pending: Ausstehende erneut versenden
   always_enforce_signing_order: Reihenfolge der Unterschriften immer erzwingen
@@ -5596,6 +5823,7 @@ de: &de
   profile_details: Profildetails
   sign_up_with_google: Mit Google registrieren
   sign_up_with_microsoft: Mit Microsoft registrieren
+  redirecting_to_provider: Weiterleitung zu %{provider}...
   by_creating_an_account_you_agree_to_our_html: 'Durch die Erstellung eines Kontos stimmen Sie unseren <a target="_blank" href="https://www.docuseal.com/privacy">Datenschutzrichtlinien</a> und <a target="_blank" href="https://www.docuseal.com/terms">Nutzungsbedingungen</a> zu.'
   enter_email_to_continue: E-Mail eingeben, um fortzufahren
   account: Konto
@@ -5844,7 +6072,7 @@ de: &de
   back_to_active: Zurück zu Aktiv
   submissions: Einreichungen
   templates: Vorlagen
-  document_templates_html: <span class="md:hidden">Vorlagen</span><span class="hidden md:inline">Dokumentvorlagen</span>
+  document_templates_html: <span class="lg:hidden">Vorlagen</span><span class="hidden lg:inline">Dokumentvorlagen</span>
   archived: Archiviert
   search: Suchen
   submissions_not_found: Einreichungen nicht gefunden
@@ -5964,6 +6192,9 @@ de: &de
   there_are_no_signatures: Es gibt keine Unterschriften
   signed_with_trusted_certificate: Signiert mit vertrauenswürdigem Zertifikat
   signed_with_external_certificate: Signiert mit externem Zertifikat
+  signature_valid: Signatur gültig
+  signature_verification_failed: Signaturprüfung fehlgeschlagen
+  contains_unsigned_changes_after_the_last_signature: Enthält nicht signierte Änderungen nach der letzten Signatur
   setup_2fa_to_continue: Richten Sie 2FA ein, um fortzufahren.
   create_a_new_account: Neues Konto erstellen.
   you_are_already_signed_in: Sie sind bereits angemeldet.
@@ -6333,6 +6564,7 @@ de: &de
   undo: Rückgängig
   redo: Wiederholen
   add_variable: Variable hinzufügen
+  variable: Variable
   enter_a_url_or_variable_name: Geben Sie eine URL oder einen Variablennamen ein
   new_token: Neues Token
   token: Token
@@ -6480,11 +6712,42 @@ de: &de
     submission_submitters: Liste der Unterzeichner
     submission_link: Link der Einreichung
     documents_link: Link der Dokumente
+  date:
+    abbr_month_names:
+      -
+      - Jan.
+      - Feb.
+      - März
+      - Apr.
+      - Mai
+      - Juni
+      - Juli
+      - Aug.
+      - Sept.
+      - Okt.
+      - Nov.
+      - Dez.
+    formats:
+      default: "%d.%m.%Y"
+      short: "%-d. %b"
+      long: "%-d. %B %Y"
   time:
     formats:
-      detailed: "%A, %d. %B %Y, %H:%M:%S Uhr"
+      short: "%-d. %b, %H:%M"
+      long: "%-d. %B %Y um %H:%M"
+      detailed: "%-d. %B %Y um %H:%M:%S"
 
 pl:
+  date:
+    formats:
+      default: "%d.%m.%Y"
+      short: "%-d %b"
+      long: "%-d %B %Y"
+  time:
+    formats:
+      short: "%-d %b, %H:%M"
+      long: "%-d %B %Y %H:%M"
+      detailed: "%-d %B %Y %H:%M:%S"
   require_phone_2fa_to_open: Wymagaj uwierzytelniania telefonicznego 2FA do otwarcia
   the_sender_has_requested_a_two_factor_authentication_via_one_time_password_sent_to_your_html: Nadawca zażądał uwierzytelnienia dwuskładnikowego poprzez jednorazowe hasło wysłane na Twój numer telefonu <b>%{phone}</b>.
   send_verification_code: Wyślij kod weryfikacyjny
@@ -6551,6 +6814,7 @@ pl:
   profile_details: Szczegóły profilu
   sign_up_with_google: Zarejestruj się przez Google
   sign_up_with_microsoft: Zarejestruj się przez Microsoft
+  redirecting_to_provider: Przekierowywanie do %{provider}...
   by_creating_an_account_you_agree_to_our_html: 'Tworząc konto, akceptujesz naszą <a target="_blank" href="https://www.docuseal.com/privacy">Politykę Prywatności</a> i <a target="_blank" href="https://www.docuseal.com/terms">Regulamin</a>.'
   enter_email_to_continue: Wprowadź e-mail, aby kontynuować
   the_code_has_been_sent_to_your_email: Kod został wysłany na Twój e-mail.
@@ -6586,6 +6850,44 @@ pl:
   too_many_requests_try_again_later: Zbyt wiele żądań. Spróbuj ponownie później.
 
 uk:
+  date:
+    month_names:
+      -
+      - січня
+      - лютого
+      - березня
+      - квітня
+      - травня
+      - червня
+      - липня
+      - серпня
+      - вересня
+      - жовтня
+      - листопада
+      - грудня
+    abbr_month_names:
+      -
+      - січ.
+      - лют.
+      - бер.
+      - квіт.
+      - трав.
+      - черв.
+      - лип.
+      - серп.
+      - вер.
+      - жовт.
+      - лист.
+      - груд.
+    formats:
+      default: "%d.%m.%Y"
+      short: "%-d %b"
+      long: "%-d %B %Y р."
+  time:
+    formats:
+      short: "%-d %b, %H:%M"
+      long: "%-d %B %Y р. о %H:%M"
+      detailed: "%-d %B %Y р. о %H:%M:%S"
   require_phone_2fa_to_open: Вимагати двофакторну автентифікацію через телефон для відкриття
   the_sender_has_requested_a_two_factor_authentication_via_one_time_password_sent_to_your_html: Відправник запитав двофакторну автентифікацію за допомогою одноразового пароля, надісланого на ваш номер телефону <b>%{phone}</b>.
   send_verification_code: Надіслати код перевірки
@@ -6652,6 +6954,7 @@ uk:
   profile_details: Дані профілю
   sign_up_with_google: Зареєструватися через Google
   sign_up_with_microsoft: Зареєструватися через Microsoft
+  redirecting_to_provider: Перенаправлення до %{provider}...
   by_creating_an_account_you_agree_to_our_html: 'Створюючи акаунт, ви погоджуєтесь з нашою <a target="_blank" href="https://www.docuseal.com/privacy">Політикою конфіденційності</a> і <a target="_blank" href="https://www.docuseal.com/terms">Умовами надання послуг</a>.'
   enter_email_to_continue: Введіть електронну пошту, щоб продовжити
   the_code_has_been_sent_to_your_email: Код було надіслано на вашу електронну пошту.
@@ -6687,6 +6990,44 @@ uk:
   too_many_requests_try_again_later: Забагато запитів. Спробуйте пізніше.
 
 cs:
+  date:
+    month_names:
+      -
+      - ledna
+      - února
+      - března
+      - dubna
+      - května
+      - června
+      - července
+      - srpna
+      - září
+      - října
+      - listopadu
+      - prosince
+    abbr_month_names:
+      -
+      - led
+      - úno
+      - bře
+      - dub
+      - kvě
+      - čvn
+      - čvc
+      - srp
+      - zář
+      - říj
+      - lis
+      - pro
+    formats:
+      default: "%d. %m. %Y"
+      short: "%-d. %-m."
+      long: "%-d. %B %Y"
+  time:
+    formats:
+      short: "%-d. %-m. %-H:%M"
+      long: "%-d. %B %Y v %-H:%M"
+      detailed: "%-d. %B %Y v %-H:%M:%S"
   require_phone_2fa_to_open: Vyžadovat otevření pomocí telefonního 2FA
   the_sender_has_requested_a_two_factor_authentication_via_one_time_password_sent_to_your_html: Odesílatel požádal o dvoufaktorové ověření pomocí jednorázového hesla zaslaného na vaše telefonní číslo <b>%{phone}</b>.
   send_verification_code: Odeslat ověřovací kód
@@ -6753,6 +7094,7 @@ cs:
   profile_details: Detaily profilu
   sign_up_with_google: Zaregistrovat se pomocí Googlu
   sign_up_with_microsoft: Zaregistrovat se pomocí Microsoftu
+  redirecting_to_provider: Přesměrování na %{provider}...
   by_creating_an_account_you_agree_to_our_html: 'Vytvořením účtu souhlasíte s našimi <a target="_blank" href="https://www.docuseal.com/privacy">Zásadami ochrany osobních údajů</a> a <a target="_blank" href="https://www.docuseal.com/terms">Podmínkami služby</a>.'
   enter_email_to_continue: Zadejte e-mail pro pokračování
   the_code_has_been_sent_to_your_email: Kód byl odeslán na váš e-mail.
@@ -6788,6 +7130,30 @@ cs:
   too_many_requests_try_again_later: Příliš mnoho požadavků. Zkuste to později.
 
 he:
+  date:
+    abbr_month_names:
+      -
+      - ינו׳
+      - פבר׳
+      - מרץ
+      - אפר׳
+      - מאי
+      - יוני
+      - יולי
+      - אוג׳
+      - ספט׳
+      - אוק׳
+      - נוב׳
+      - דצמ׳
+    formats:
+      default: "%d.%m.%Y"
+      short: "%-d ב%b"
+      long: "%-d ב%B %Y"
+  time:
+    formats:
+      short: "%-d ב%b, %-H:%M"
+      long: "%-d ב%B %Y בשעה %-H:%M"
+      detailed: "%-d ב%B %Y בשעה %-H:%M:%S"
   require_phone_2fa_to_open: דרוש אימות דו-שלבי באמצעות טלפון לפתיחה
   the_sender_has_requested_a_two_factor_authentication_via_one_time_password_sent_to_your_html: השולח ביקש אימות דו-שלבי באמצעות סיסמה חד פעמית שנשלחה למספר הטלפון שלך <b>%{phone}</b>.
   send_verification_code: שלח קוד אימות
@@ -6854,6 +7220,7 @@ he:
   profile_details: פרטי הפרופיל
   sign_up_with_google: הירשם עם גוגל
   sign_up_with_microsoft: הירשם עם מיקרוסופט
+  redirecting_to_provider: מפנה אל %{provider}...
   by_creating_an_account_you_agree_to_our_html: 'על ידי יצירת חשבון, אתה מסכים ל<a target="_blank" href="https://www.docuseal.com/privacy">מדיניות הפרטיות</a> ול<a target="_blank" href="https://www.docuseal.com/terms">תנאי השירות</a> שלנו.'
   enter_email_to_continue: הכנס דוא"ל כדי להמשיך
   the_code_has_been_sent_to_your_email: הקוד נשלח לדוא"ל שלך.
@@ -6925,6 +7292,27 @@ nl: &nl
   require_all_recipients: Alle ontvangers verplichten
   stripe_account_has_been_connected: Stripe-account is verbonden.
   re_connect_stripe: Stripe opnieuw verbinden
+  paypal_integration: PayPal-integratie
+  paypal_account_has_been_connected: PayPal-account is verbonden.
+  re_connect_paypal: PayPal opnieuw verbinden
+  failed_to_connect_paypal_please_try_again: PayPal kon niet worden verbonden. Probeer het opnieuw.
+  paypal_connection_was_not_completed: De verbinding met PayPal is niet voltooid.
+  disconnecting_your_paypal_account_will_prevent_you_from_offering_paypal_services_and_products_on_your_website_do_you_wish_to_continue: Het loskoppelen van uw PayPal-account voorkomt dat u PayPal-diensten en -producten op uw website kunt aanbieden. Wilt u doorgaan?
+  attention_you_currently_cannot_receive_payments_due_to_restriction_on_your_paypal_account_please_reach_out_to_paypal_customer_support_or_connect_to_paypal_com_for_more_information: 'Let op: U kunt momenteel geen betalingen ontvangen vanwege een beperking op uw PayPal-account. Neem contact op met de PayPal-klantenservice of ga naar https://www.paypal.com voor meer informatie.'
+  attention_please_confirm_your_email_address_on_paypal_com_in_order_to_receive_payments_you_currently_cannot_receive_payments: 'Let op: Bevestig uw e-mailadres op https://www.paypal.com/businessprofile/settings om betalingen te kunnen ontvangen! U kunt momenteel geen betalingen ontvangen.'
+  payment_receipt: Betalingsbewijs
+  amount_paid: Betaald bedrag
+  transaction: Transactie
+  transaction_id: Transactie-ID
+  order_id: Order-ID
+  payment_date: Datum
+  paid_by: Betaald door
+  paid_to: Betaald aan
+  business: Bedrijf
+  country: Land
+  payer_id: Betaler-ID
+  merchant_id: Verkoper-ID
+  breakdown: Specificatie
   bcc_recipients: BCC-ontvangers
   resend_pending: Opnieuw verzenden in behandeling
   always_enforce_signing_order: Ondertekenvolgorde altijd afdwingen
@@ -7079,6 +7467,7 @@ nl: &nl
   profile_details: Profielgegevens
   sign_up_with_google: Registreren met Google
   sign_up_with_microsoft: Registreren met Microsoft
+  redirecting_to_provider: Doorverwijzen naar %{provider}...
   by_creating_an_account_you_agree_to_our_html: Door een account aan te maken gaat u akkoord met ons <a target="_blank" href="https://www.docuseal.com/privacy">Privacybeleid</a> en onze <a target="_blank" href="https://www.docuseal.com/terms">Servicevoorwaarden</a>.
   enter_email_to_continue: Voer e-mailadres in om door te gaan
   account: Account
@@ -7327,7 +7716,7 @@ nl: &nl
   back_to_active: Terug naar Actief
   submissions: Inzendingen
   templates: Sjablonen
-  document_templates_html: <span class="md:hidden">Sjablonen</span><span class="hidden md:inline">Documentsjablonen</span>
+  document_templates_html: <span class="lg:hidden">Sjablonen</span><span class="hidden lg:inline">Documentsjablonen</span>
   archived: Gearchiveerd
   search: Zoeken
   submissions_not_found: Geen inzendingen gevonden
@@ -7447,6 +7836,9 @@ nl: &nl
   there_are_no_signatures: Er zijn geen handtekeningen
   signed_with_trusted_certificate: Ondertekend met vertrouwd certificaat
   signed_with_external_certificate: Ondertekend met extern certificaat
+  signature_valid: Handtekening geldig
+  signature_verification_failed: Verificatie van handtekening mislukt
+  contains_unsigned_changes_after_the_last_signature: Bevat niet-ondertekende wijzigingen na de laatste handtekening
   setup_2fa_to_continue: Stel 2FA in om door te gaan.
   create_a_new_account: Maak een nieuw account aan.
   you_are_already_signed_in: U bent al aangemeld.
@@ -7812,6 +8204,7 @@ nl: &nl
   undo: Ongedaan maken
   redo: Opnieuw
   add_variable: Variabele toevoegen
+  variable: Variabele
   enter_a_url_or_variable_name: Voer een URL of variabelenaam in
   new_token: Nieuw token
   token: Token
@@ -7959,11 +8352,29 @@ nl: &nl
     submission_submitters: Lijst van ondertekenaars
     submission_link: Link van de inzending
     documents_link: Link van de documenten
+  date:
+    formats:
+      short: "%-d %b"
+      long: "%-d %B %Y"
   time:
     formats:
-      detailed: "%d %B %Y %H:%M:%S"
+      short: "%-d %b, %H:%M"
+      long: "%-d %B %Y om %H:%M"
+      detailed: "%-d %B %Y om %H:%M:%S"
 
 ar:
+  date:
+    formats:
+      default: "%d‏/%m‏/%Y"
+      short: "%-d %b"
+      long: "%-d %B %Y"
+  time:
+    am: "ص"
+    pm: "م"
+    formats:
+      short: "%-d %b، %-I:%M %p"
+      long: "%-d %B %Y في %-I:%M %p"
+      detailed: "%-d %B %Y في %-I:%M:%S %p"
   require_phone_2fa_to_open: "يتطلب المصادقة الثنائية عبر الهاتف للفتح"
   the_sender_has_requested_a_two_factor_authentication_via_one_time_password_sent_to_your_html: "طلب المرسل المصادقة الثنائية عبر كلمة مرور لمرة واحدة مرسلة إلى رقم هاتفك <b>%{phone}</b>."
   send_verification_code: "إرسال رمز التحقق"
@@ -8030,6 +8441,7 @@ ar:
   profile_details: تفاصيل الملف الشخصي
   sign_up_with_google: الاشتراك باستخدام جوجل
   sign_up_with_microsoft: الاشتراك باستخدام مايكروسوفت
+  redirecting_to_provider: جارٍ إعادة التوجيه إلى %{provider}...
   by_creating_an_account_you_agree_to_our_html: 'من خلال إنشاء حساب، فإنك توافق على <a target="_blank" href="https://www.docuseal.com/privacy">سياسة الخصوصية</a> و<a target="_blank" href="https://www.docuseal.com/terms">شروط الخدمة</a> الخاصة بنا.'
   enter_email_to_continue: أدخل البريد الإلكتروني للمتابعة
   the_code_has_been_sent_to_your_email: تم إرسال الرمز إلى بريدك الإلكتروني.
@@ -8065,6 +8477,16 @@ ar:
   too_many_requests_try_again_later: طلبات كثيرة جدًا. حاول مرة أخرى لاحقًا.
 
 ko:
+  date:
+    formats:
+      default: "%Y. %m. %d."
+      short: "%b %-d일"
+      long: "%Y년 %B %-d일"
+  time:
+    formats:
+      short: "%b %-d일 %p %-I:%M"
+      long: "%Y년 %B %-d일 %p %-I:%M"
+      detailed: "%Y년 %B %-d일 %p %-I:%M:%S"
   require_phone_2fa_to_open: 열려면 휴대폰 2FA 요구
   the_sender_has_requested_a_two_factor_authentication_via_one_time_password_sent_to_your_html: 발신자가 <b>%{phone}</b> 전화번호로 전송된 일회용 비밀번호를 통해 2단계 인증을 요청했습니다.
   send_verification_code: 인증 코드 보내기
@@ -8131,6 +8553,7 @@ ko:
   profile_details: 프로필 세부 정보
   sign_up_with_google: Google로 가입
   sign_up_with_microsoft: Microsoft로 가입
+  redirecting_to_provider: "%{provider}(으)로 이동 중..."
   by_creating_an_account_you_agree_to_our_html: '계정을 생성함으로써, <a target="_blank" href="https://www.docuseal.com/privacy">개인정보 처리방침</a> 및 <a target="_blank" href="https://www.docuseal.com/terms">서비스 약관</a>에 동의하게 됩니다.'
   enter_email_to_continue: 계속하려면 이메일을 입력하세요
   the_code_has_been_sent_to_your_email: 코드가 이메일로 전송되었습니다.
@@ -8166,6 +8589,16 @@ ko:
   too_many_requests_try_again_later: 요청이 너무 많습니다. 나중에 다시 시도하세요.
 
 ja:
+  date:
+    formats:
+      default: "%Y/%m/%d"
+      short: "%-m月%-d日"
+      long: "%Y年%-m月%-d日"
+  time:
+    formats:
+      short: "%-m月%-d日 %-H:%M"
+      long: "%Y年%-m月%-d日 %-H:%M"
+      detailed: "%Y年%-m月%-d日 %-H:%M:%S"
   require_phone_2fa_to_open: 電話による2段階認証が必要です
   the_sender_has_requested_a_two_factor_authentication_via_one_time_password_sent_to_your_html: 送信者は、<b>%{phone}</b> に送信されたワンタイムパスワードによる2段階認証を要求しました。
   send_verification_code: 認証コードを送信
@@ -8232,6 +8665,7 @@ ja:
   profile_details: プロフィールの詳細
   sign_up_with_google: Googleで登録
   sign_up_with_microsoft: Microsoftで登録
+  redirecting_to_provider: "%{provider} にリダイレクトしています..."
   by_creating_an_account_you_agree_to_our_html: '<a target="_blank" href="https://www.docuseal.com/privacy">プライバシーポリシー</a>および<a target="_blank" href="https://www.docuseal.com/terms">利用規約</a>に同意の上、アカウントを作成します。'
   enter_email_to_continue: 続行するにはメールを入力してください
   the_code_has_been_sent_to_your_email: コードがあなたのメールに送信されました
@@ -8268,21 +8702,33 @@ ja:
 
 en-US:
   <<: *en
-  date:
-    formats:
-      default: "%m/%d/%Y"
-  time:
-    formats:
-      detailed: "%B %d, %Y %I:%M:%S %p"
 
 en-GB:
   <<: *en
   date:
+    abbr_month_names:
+      -
+      - Jan
+      - Feb
+      - Mar
+      - Apr
+      - May
+      - Jun
+      - Jul
+      - Aug
+      - Sept
+      - Oct
+      - Nov
+      - Dec
     formats:
       default: "%d/%m/%Y"
+      short: "%-d %b"
+      long: "%-d %B %Y"
   time:
     formats:
-      detailed: "%d %B, %Y %H:%M:%S"
+      short: "%-d %b, %H:%M"
+      long: "%-d %B %Y at %H:%M"
+      detailed: "%-d %B %Y at %H:%M:%S"
 
 es-ES:
   <<: *es

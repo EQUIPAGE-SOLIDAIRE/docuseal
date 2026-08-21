@@ -33,12 +33,14 @@ class SubmissionsController < ApplicationController
 
   def new
     authorize!(:new, Submission)
+
+    render :new, layout: 'plain'
   end
 
   def create
     return redirect_to template_path(@template), alert: I18n.t('template_has_been_archived') if @template.archived_at?
 
-    save_template_message(@template, params) if params[:save_message] == '1'
+    save_template_message(@template, params) if params[:save_message] == '1' && can?(:update, @template)
 
     [params.delete(:subject), params.delete(:body)] if params[:is_custom_message] != '1'
 

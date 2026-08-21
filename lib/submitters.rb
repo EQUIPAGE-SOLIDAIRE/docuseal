@@ -49,7 +49,7 @@ module Submitters
   end
 
   def fulltext_search_field(current_user, submitters, keyword, field_name)
-    keyword = keyword.delete("\0")
+    keyword = keyword.delete("\0\\")
 
     return submitters.none if keyword.blank?
 
@@ -93,7 +93,8 @@ module Submitters
   def plain_search(submitters, keyword)
     return submitters if keyword.blank?
 
-    term = "%#{keyword.downcase}%"
+    sanitized = ActiveRecord::Base.sanitize_sql_like(keyword.downcase)
+    term = "%#{sanitized}%"
 
     arel_table = Submitter.arel_table
 

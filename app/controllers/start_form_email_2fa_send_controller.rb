@@ -6,9 +6,10 @@ class StartFormEmail2faSendController < ApplicationController
   skip_before_action :authenticate_user!
   skip_authorization_check
 
-  def create
-    @template = Template.find_by!(slug: params[:slug])
+  before_action :load_template
+  before_action :authorize_start!
 
+  def create
     @submitter = @template.submissions.new(account_id: @template.account_id)
                           .submitters.new(**submitter_params, account_id: @template.account_id)
 
@@ -24,6 +25,23 @@ class StartFormEmail2faSendController < ApplicationController
   end
 
   private
+
+  def load_template
+    @template = Template.find_by!(slug: params[:slug])
+  end
+
+  def authorize_start!
+    is_archived = @template.archived_at? || @template.account.archived_at?
+
+    return redirect_to start_form_path(@template.slug) if is_archived
+
+    return if (@template.shared_link? || (current_user && current_ability.can?(:read, @template))) &&
+              @template.preferences['shared_link_2fa'] == true
+
+    Rollbar.warning("Not shared template: #{@template.id}") if defined?(Rollbar)
+
+    redirect_to start_form_path(@template.slug)
+  end
 
   def submitter_params
     params.require(:submitter).permit(:name, :email, :phone)
