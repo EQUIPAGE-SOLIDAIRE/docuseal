@@ -3,8 +3,10 @@
     ref="dragContainer"
     style="max-width: 1600px"
     :class="nativeView ? (isSheetView ? 'bg-base-100' : 'px-4') : 'mx-auto pl-3 md:pl-4 h-full'"
+    @dragstart="isInternalDrag = true"
+    @dragend="isInternalDrag = false"
     @dragover="onDragover"
-    @drop="isDragFile = false"
+    @drop="[isDragFile = false, isInternalDrag = false]"
   >
     <HoverDropzone
       v-if="sortedDocuments.length && withUploadButton && editable && !isSheetView"
@@ -413,9 +415,9 @@
                     <a
                       :href="`/templates/${template.id}/form`"
                       :data-native-actions="template.submitters.length > 1 ? 'users' : null"
-                      data-turbo="false"
+                      data-turbo-prefetch="false"
                       class="flex items-center justify-center space-x-2"
-                      @click.exact="isPreviewLoading = true"
+                      @click.exact="onSaveAndPreviewClick"
                     >
                       <IconInnerShadowTop
                         v-if="isPreviewLoading"
@@ -638,6 +640,7 @@
                 :draw-field-type="drawFieldType"
                 :draw-custom-field="drawCustomField"
                 :draw-option="drawOption"
+                :autosave="autosave"
                 @update="onDynamicDocumentUpdate"
                 @draw="clearDrawField"
                 @add-custom-field="addCustomField"
@@ -769,7 +772,7 @@
       class="sticky bottom-0 z-20"
     >
       <native-action
-        v-if="nativePlatform && withDocumentsList && (isBreakpointLg || isMobile) && sortedDocuments.length && editable"
+        v-if="nativePlatform && withDocumentsList && (isBreakpointLg || isMobile) && editable"
         data-placement="drawer"
         data-side="leading"
         data-icon="files"
@@ -779,7 +782,7 @@
         data-view="documents"
       />
       <native-action
-        v-if="nativePlatform && withFieldsList && isBreakpointLg && sortedDocuments.length && editable"
+        v-if="nativePlatform && withFieldsList && isBreakpointLg && editable"
         data-placement="drawer"
         data-side="trailing"
         data-icon="plus"
@@ -1377,6 +1380,7 @@ export default {
       isPreviewLoading: false,
       isLoadingBlankPage: false,
       isSaving: false,
+      hasUnsavedChanges: false,
       isDetectingPageFields: false,
       detectFieldsQueue: [],
       detectingAnalyzingProgress: null,
@@ -1390,6 +1394,7 @@ export default {
       drawOption: null,
       dragField: null,
       isDragFile: false,
+      isInternalDrag: false,
       isMathLoaded: false,
       isRevisionsModalOpen: false,
       isDocumentsDrawerOpen: false,
@@ -1659,6 +1664,11 @@ export default {
 
     window.addEventListener('dragleave', this.onWindowDragLeave)
 
+    if (!this.autosave) {
+      window.addEventListener('beforeunload', this.onBeforeUnload)
+      document.addEventListener('turbo:before-visit', this.onBeforeVisit)
+    }
+
     this.$nextTick(() => {
       if (document.location.search?.includes('stripe_connect_success')) {
         document.querySelector('form[action="/auth/stripe_connect"]')?.closest('.dropdown')?.querySelector('label')?.focus()
@@ -1682,6 +1692,11 @@ export default {
 
     this.resizeObserver.disconnect()
     window.removeEventListener('dragleave', this.onWindowDragLeave)
+
+    if (!this.autosave) {
+      window.removeEventListener('beforeunload', this.onBeforeUnload)
+      document.removeEventListener('turbo:before-visit', this.onBeforeVisit)
+    }
   },
   beforeUpdate () {
     this.documentRefs = []
@@ -2039,8 +2054,18 @@ export default {
 
         ref.x = e.clientX - ref.offsetX
         ref.y = e.clientY - ref.offsetY
-      } else if (e.dataTransfer?.types?.includes('Files') && !this.editModalDocumentUuid) {
-        this.isDragFile = true
+      } else if (e.dataTransfer?.types?.includes('Files') && !this.editModalDocumentUuid && !this.isInternalDrag) {
+        const items = Array.from(e.dataTransfer.items)
+
+        if (this.dynamicDocuments.length && items.length && items.every((item) => item.type.startsWith('image/'))) {
+          if (!e.defaultPrevented) {
+            e.preventDefault()
+
+            e.dataTransfer.dropEffect = 'none'
+          }
+        } else {
+          this.isDragFile = true
+        }
       }
     },
     onWindowDragLeave (event) {
@@ -2226,6 +2251,37 @@ export default {
         if (customField) this.applyCustomFieldAttributes(field, customField)
 
         this.insertField(field)
+      }
+    },
+    onSaveAndPreviewClick (event) {
+      this.isPreviewLoading = true
+
+      if (!this.autosave) {
+        event.preventDefault()
+
+        const dynamicDocumentRefs = this.documentRefs.filter((ref) => ref.isDynamic)
+
+        dynamicDocumentRefs.forEach((ref) => ref.update())
+
+        this.rebuildVariablesSchema({ disable: false })
+
+        Promise.all([this.save({ force: true }), ...dynamicDocumentRefs.map((ref) => ref.saveBody())]).then(() => {
+          window.Turbo.visit(`/templates/${this.template.id}/form`)
+        })
+      }
+    },
+    onBeforeUnload (event) {
+      if (this.hasUnsavedChanges) {
+        event.preventDefault()
+
+        event.returnValue = ''
+
+        return ''
+      }
+    },
+    onBeforeVisit (event) {
+      if (this.hasUnsavedChanges && !window.confirm(this.t('close_without_saving_changes'))) {
+        event.preventDefault()
       }
     },
     closeDropdown () {
@@ -4023,6 +4079,8 @@ export default {
       }
 
       if (!this.autosave && !force) {
+        this.hasUnsavedChanges = true
+
         return Promise.resolve({})
       }
 
@@ -4045,6 +4103,8 @@ export default {
         }),
         headers: { 'Content-Type': 'application/json' }
       }).then(() => {
+        this.hasUnsavedChanges = false
+
         if (this.onSave) {
           this.onSave(this.template)
         }

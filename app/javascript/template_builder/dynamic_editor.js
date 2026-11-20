@@ -27,11 +27,15 @@ tiptapStylesheet.replaceSync(
   font-feature-settings: "liga" 0;
   display: flex;
   flex-flow: column nowrap;
-  min-height: inherit;
+  flex-grow: 1;
 }
 
-.ProseMirror > article {
+.ProseMirror > article:last-of-type {
   margin-bottom: auto;
+}
+
+.ProseMirror p.doc-trailing-break::after {
+  content: none;
 }
 
 .ProseMirror [contenteditable="false"] {
@@ -174,7 +178,7 @@ const SAFE_URL_REGEXP = /^(?:https?:\/\/|data:image\/|blob:|mailto:|tel:|\{|#)/i
 function isSafeAttr (name, value) {
   const lowerName = name.toLowerCase()
 
-  if (lowerName.startsWith('on') || DROP_ATTRS.includes(lowerName)) return false
+  if (lowerName.startsWith('on') || lowerName.startsWith('data-turbo') || DROP_ATTRS.includes(lowerName)) return false
   if ((lowerName === 'href' || lowerName === 'src') && !SAFE_URL_REGEXP.test(value.trim())) return false
 
   return true

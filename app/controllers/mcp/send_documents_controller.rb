@@ -66,7 +66,7 @@ module Mcp
       }
     }.freeze
 
-    # rubocop:disable Metrics
+    # rubocop:disable-next Metrics
     def call
       @template = Template.accessible_by(current_ability).find(mcp_params['template_id'])
 
@@ -77,6 +77,12 @@ module Mcp
       authorize!(:create, Submission.new(template: @template, account_id: current_user.account_id))
 
       return render_tool_error('Template has no fields') if @template.fields.blank?
+
+      if @template.variables_schema.present?
+        Rollbar.warning("MCP send variables template: #{@template.id}") if defined?(Rollbar)
+
+        return render_tool_error('Templates with variables are not supported')
+      end
 
       submitters = (mcp_params['submitters'] || []).map do |s|
         attrs = s.slice('email', 'name', 'role', 'phone').compact_blank
@@ -115,6 +121,5 @@ module Mcp
     rescue Submissions::CreateFromSubmitters::BaseError => e
       render_tool_error(e.message)
     end
-    # rubocop:enable Metrics
   end
 end
